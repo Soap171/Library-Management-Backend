@@ -1,22 +1,28 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { errorHandle } from "../utils/error.js";
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET_KEY = process.env.JWT_SECRET;
 
 export const verifyToken = (req, res, next) => {
   const token = req.cookies.access_token;
 
+  console.log("Token from cookies:", token); // Check if token is correctly retrieved
+
   if (!token) {
-    return res.status(403).json({ message: "No token provided" });
+    console.log("Token not found");
+    return next(errorHandle(401, "Unauthorized"));
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET_KEY);
     req.userId = decoded.userId;
+    console.log("Decoded userId:", req.userId); // Check if userId is correctly decoded
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Unauthorized" });
+    console.error("Token verification error:", error.message);
+    return next(errorHandle(401, "Unauthorized"));
   }
 };

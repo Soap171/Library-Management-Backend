@@ -21,7 +21,9 @@ export const login = async (req, res, next) => {
     const isMatch = await bcypt.compare(password, user.password);
     if (!isMatch) return next(errorHandle(401, "Invalid username or password"));
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "2h" });
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
     const { password: pass, ...rest } = user._doc;
 
     res
