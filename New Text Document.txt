@@ -5,6 +5,7 @@ can signup | login with google
 register and sign in
 update their profile
 
+
 This is for the admin 
 admin can view the reservations for each book
 admin can make the crud operation of books and stuff
