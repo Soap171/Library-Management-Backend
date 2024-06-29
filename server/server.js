@@ -3,12 +3,14 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import cors from "cors";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route.js";
 const app = express();
 
 // Middleware
 dotenv.config();
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(cors());
 app.use(express.json());
 
