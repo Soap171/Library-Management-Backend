@@ -88,5 +88,6 @@ export const google = async (req, res, next) => {
 };
 
 export const logout = async (req, res, next) => {
-  res.send("This is log out");
+  res.cookie("access_token", "", { httpOnly: true, expires: new Date(0) });
+  res.status(201).json({ message: "Logged out" });
 };
