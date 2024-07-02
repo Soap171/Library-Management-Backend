@@ -87,6 +87,30 @@ export const register = async (req, res, next) => {
   }
 };
 
+export const passwordReset = async (req, res, next) => {
+  const { username, password, newPassword } = req.body;
+
+  if (!username || !password) {
+    return next(errorHandle(401, "Please fill in all fields"));
+  }
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) return next(errorHandle(401, "User does not exist"));
+
+    const isPassword = await bcypt.compare(password, user.password);
+
+    if (!isPassword) return next(errorHandle(401, "Invalid password"));
+
+    const hashedPassword = await bcypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+    res.status(201).json({ message: "Password updated successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const google = async (req, res, next) => {
   res.send("This is Google");
 };
