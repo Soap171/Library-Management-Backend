@@ -12,5 +12,6 @@ import {
 const route = express.Router();
 
 route.get("/users", verifyToken, checkAdmin, viewAllUsers);
+route.post("/book", verifyToken, checkAdmin, addBook);
 
 export default route;
