@@ -2,6 +2,7 @@ import { errorHandle } from "../utils/error.js";
 import Book from "../models/book.schema.js";
 import User from "../models/user.schema.js";
 import Publisher from "../models/publisher.schema.js";
+import mongoose from "mongoose";
 
 export const viewAllBooks = async (req, res, next) => {};
 
@@ -19,10 +20,8 @@ export const addBook = async (req, res, next) => {
   } = req.body;
 
   try {
-    // Check if publisher already exists
     let publisher = await Publisher.findOne({ name: publisherName });
 
-    // If publisher does not exist, create a new one
     if (!publisher) {
       publisher = new Publisher({
         name: publisherName,
@@ -52,7 +51,32 @@ export const addBook = async (req, res, next) => {
   }
 };
 
-export const updateBook = async (req, res, next) => {};
+export const updateBook = async (req, res, next) => {
+  const id = req.params.id;
+  const { copiesAvailable } = req.body;
+  console.log(id);
+
+  // Check if the id is a valid ObjectId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(errorHandle(400, "Invalid book ID"));
+  }
+
+  if (!copiesAvailable)
+    return next(errorHandle(401, "Available copies is required"));
+
+  try {
+    const book = await Book.findById({ _id: id });
+
+    if (!book) return next(errorHandle(404, "Book not found"));
+
+    book.copiesAvailable = copiesAvailable || book.copiesAvailable;
+
+    await book.save();
+    res.status(200).json({ message: "Book updated successfully", book });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const deleteBook = async (req, res, next) => {};
 
@@ -67,7 +91,7 @@ export const viewAllUsers = async (req, res, next) => {
 };
 
 export const deletePublisher = async (req, res, next) => {
-  const { _id } = req.body;
+  const { id } = req.body;
   try {
     const publisher = await Publisher.findByIdAndDelete(_id);
     res.status(200).json(publisher);
