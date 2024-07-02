@@ -19,7 +19,9 @@ export const verifyToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET_KEY);
     req.userId = decoded.userId;
-    console.log("Decoded userId:", req.userId); // Check if userId is correctly decoded
+    console.log(decoded.role);
+    req.userRole = decoded.role;
+    console.log("Decoded userId:", req.userId, "Decoded role:", req.userRole);
     next();
   } catch (error) {
     console.error("Token verification error:", error.message);

@@ -21,7 +21,7 @@ export const login = async (req, res, next) => {
     const isMatch = await bcypt.compare(password, user.password);
     if (!isMatch) return next(errorHandle(401, "Invalid username or password"));
 
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
+    const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, {
       expiresIn: "1h",
     });
     const { password: pass, ...rest } = user._doc;
@@ -48,6 +48,7 @@ export const register = async (req, res, next) => {
     lastName,
     address,
     phoneNumber,
+    role,
   } = req.body;
 
   if (
@@ -76,6 +77,7 @@ export const register = async (req, res, next) => {
       lastName,
       address,
       phoneNumber,
+      role: role || "member",
     });
     await newUser.save();
     return res.status(201).json(newUser);
