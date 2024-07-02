@@ -10,4 +10,12 @@ export const updateBook = async (req, res, next) => {};
 
 export const deleteBook = async (req, res, next) => {};
 
-export const viewAllUsers = async (req, res, next) => {};
+export const viewAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find().select("-password");
+    console.log(users);
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};

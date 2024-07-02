@@ -11,8 +11,6 @@ import {
 
 const route = express.Router();
 
-route.get("/", verifyToken, checkAdmin, (req, res) => {
-  res.status(200).json({ message: "Welcome Admin" });
-});
+route.get("/users", verifyToken, checkAdmin, viewAllUsers);
 
 export default route;
