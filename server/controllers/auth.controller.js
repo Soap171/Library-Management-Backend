@@ -105,6 +105,7 @@ export const passwordReset = async (req, res, next) => {
     const hashedPassword = await bcypt.hash(newPassword, 10);
 
     user.password = hashedPassword;
+    await user.save();
     res.status(201).json({ message: "Password updated successfully" });
   } catch (error) {
     next(error);
