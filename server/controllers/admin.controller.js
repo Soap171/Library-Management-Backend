@@ -31,6 +31,7 @@ export const addBook = async (req, res, next) => {
   try {
     const book = await Book.findOne({ title });
     if (book) return next(errorHandle(400, "Book already exists"));
+
     const publisher = await Publisher.findOne({ name: publisherName });
 
     if (!publisher) {
@@ -42,6 +43,8 @@ export const addBook = async (req, res, next) => {
 
       await publisher.save();
     }
+
+    const author = await Au;
 
     const newBook = new Book({
       title,
@@ -116,6 +119,23 @@ export const sortBooksByPublisher = async (req, res, next) => {
       .populate("publisher", "name");
     if (!books.length)
       return next(errorHandle(404, "No books found for this publisher"));
+
+    res.status(200).json(books);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const searchBooksByAuthor = async (req, res, next) => {
+  const author = req.params.author;
+
+  try {
+    const books = await Book.find({
+      author: { $regex: author, $options: "i" },
+    }).sort({ title: 1 });
+
+    if (!books.length)
+      return next(errorHandle(404, "No books found for this author"));
 
     res.status(200).json(books);
   } catch (error) {

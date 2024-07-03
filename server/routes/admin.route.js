@@ -1,6 +1,7 @@
 import express from "express";
 import { checkAdmin } from "../utils/checkAdmin.js";
 import { verifyToken } from "../utils/verifyToken.js";
+
 import {
   viewAllBooks,
   addBook,
@@ -12,6 +13,7 @@ import {
   viewAllPublishers,
   viewPublisher,
   sortBooksByPublisher,
+  searchBooksByAuthor,
 } from "../controllers/admin.controller.js";
 
 const route = express.Router();
@@ -30,4 +32,5 @@ route.get(
   checkAdmin,
   sortBooksByPublisher
 );
+route.get("/books/:author", verifyToken, checkAdmin, searchBooksByAuthor);
 export default route;
