@@ -88,8 +88,22 @@ export const updateBook = async (req, res, next) => {
   }
 };
 
-export const deleteBook = async (req, res, next) => {};
+export const deleteBook = async (req, res, next) => {
+  const id = req.params.id; // Directly access req.params.id
 
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(errorHandle(400, "Invalid book ID"));
+  }
+  try {
+    const result = await Book.deleteOne({ _id: id });
+    if (result.deletedCount === 0)
+      return next(errorHandle(404, "Book not found"));
+
+    res.status(200).json({ message: "Book deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
 export const viewAllUsers = async (req, res, next) => {
   try {
     const users = await User.find().select("-password");
