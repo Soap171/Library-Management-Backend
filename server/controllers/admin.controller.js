@@ -4,7 +4,16 @@ import User from "../models/user.schema.js";
 import Publisher from "../models/publisher.schema.js";
 import mongoose from "mongoose";
 
-export const viewAllBooks = async (req, res, next) => {};
+export const viewAllBooks = async (req, res, next) => {
+  try {
+    const books = await Book.find();
+    if (!books) return next(errorHandle(404, "No books found"));
+
+    res.status(200).json(books);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const addBook = async (req, res, next) => {
   const {
@@ -20,7 +29,9 @@ export const addBook = async (req, res, next) => {
   } = req.body;
 
   try {
-    let publisher = await Publisher.findOne({ name: publisherName });
+    const book = await Book.findOne({ title });
+    if (book) return next(errorHandle(400, "Book already exists"));
+    const publisher = await Publisher.findOne({ name: publisherName });
 
     if (!publisher) {
       publisher = new Publisher({
@@ -56,7 +67,6 @@ export const updateBook = async (req, res, next) => {
   const { copiesAvailable } = req.body;
   console.log(id);
 
-  // Check if the id is a valid ObjectId
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return next(errorHandle(400, "Invalid book ID"));
   }
