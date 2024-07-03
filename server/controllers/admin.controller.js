@@ -123,3 +123,54 @@ export const deletePublisher = async (req, res, next) => {
     next(error);
   }
 };
+
+export const addPublisher = async (req, res, next) => {
+  const { name, address, contactNumber } = req.body;
+  if (!name || !address || !contactNumber)
+    return next(errorHandle(400, "All fields are required"));
+
+  try {
+    const publisher = await Publisher.findOne({ name });
+    if (publisher) return next(errorHandle(400, "Publisher already exists"));
+
+    const newPublisher = new Publisher({
+      name,
+      address,
+      contactNumber,
+    });
+
+    await newPublisher.save();
+    res
+      .status(201)
+      .json({ message: "Publisher created successfully", newPublisher });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const viewAllPublishers = async (req, res, next) => {
+  try {
+    const publishers = await Publisher.find();
+    if (!publishers) return next(errorHandle(404, "No publishers found"));
+
+    res.status(200).json(publishers);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const viewPublisher = async (req, res, next) => {
+  const id = req.params.id;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return next(errorHandle(400, "Invalid publisher ID"));
+
+  try {
+    const publisher = await Publisher.findById({ _id: id });
+    if (!publisher) return next(errorHandle(404, "Publisher not found"));
+
+    res.status(200).json(publisher);
+  } catch (error) {
+    next(error);
+  }
+};
