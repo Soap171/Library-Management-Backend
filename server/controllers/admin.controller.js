@@ -4,6 +4,7 @@ import User from "../models/user.schema.js";
 import Publisher from "../models/publisher.schema.js";
 import mongoose from "mongoose";
 
+// Books related functions
 export const viewAllBooks = async (req, res, next) => {
   try {
     const books = await Book.find();
@@ -143,6 +144,9 @@ export const searchBooksByAuthor = async (req, res, next) => {
   }
 };
 
+// end of Book related functions
+
+// User related functions
 export const viewAllUsers = async (req, res, next) => {
   try {
     const users = await User.find().select("-password");
@@ -152,7 +156,9 @@ export const viewAllUsers = async (req, res, next) => {
     next(error);
   }
 };
+// end of User related functions
 
+// Publisher related functions
 export const deletePublisher = async (req, res, next) => {
   const { id } = req.body;
   try {
@@ -213,3 +219,4 @@ export const viewPublisher = async (req, res, next) => {
     next(error);
   }
 };
+// end of Publisher related functions

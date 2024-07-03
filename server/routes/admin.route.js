@@ -18,19 +18,25 @@ import {
 
 const route = express.Router();
 
+// view users of the web applications
 route.get("/users", verifyToken, checkAdmin, viewAllUsers);
-route.post("/book", verifyToken, checkAdmin, addBook);
-route.put("/book/:id", verifyToken, checkAdmin, updateBook);
-route.get("/books", verifyToken, checkAdmin, viewAllBooks);
-route.delete("/book/:id", verifyToken, checkAdmin, deleteBook);
-route.post("/publisher", verifyToken, checkAdmin, addPublisher);
-route.get("/publishers", verifyToken, checkAdmin, viewAllPublishers);
-route.get("/publisher/:id", verifyToken, checkAdmin, viewPublisher);
+
+// book related routes
+route.post("/book", verifyToken, checkAdmin, addBook); // create a new book
+route.put("/book/:id", verifyToken, checkAdmin, updateBook); // update a book
+route.get("/books", verifyToken, checkAdmin, viewAllBooks); // view all books
+route.delete("/book/:id", verifyToken, checkAdmin, deleteBook); // delete a book
 route.get(
   "/books/publisher/:id",
   verifyToken,
   checkAdmin,
   sortBooksByPublisher
-);
-route.get("/books/:author", verifyToken, checkAdmin, searchBooksByAuthor);
+); // search books using publisher id
+route.get("/books/:author", verifyToken, checkAdmin, searchBooksByAuthor); // serch books using author's name
+
+// publisher related routes
+route.post("/publisher", verifyToken, checkAdmin, addPublisher); // add a new publisher
+route.get("/publishers", verifyToken, checkAdmin, viewAllPublishers); // view all publishers
+route.get("/publisher/:id", verifyToken, checkAdmin, viewPublisher); // view a publisher
+
 export default route;
