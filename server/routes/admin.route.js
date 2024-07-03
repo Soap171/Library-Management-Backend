@@ -11,6 +11,7 @@ import {
   deletePublisher,
   viewAllPublishers,
   viewPublisher,
+  sortBooksByPublisher,
 } from "../controllers/admin.controller.js";
 
 const route = express.Router();
@@ -23,4 +24,10 @@ route.delete("/book/:id", verifyToken, checkAdmin, deleteBook);
 route.post("/publisher", verifyToken, checkAdmin, addPublisher);
 route.get("/publishers", verifyToken, checkAdmin, viewAllPublishers);
 route.get("/publisher/:id", verifyToken, checkAdmin, viewPublisher);
+route.get(
+  "/books/publisher/:id",
+  verifyToken,
+  checkAdmin,
+  sortBooksByPublisher
+);
 export default route;

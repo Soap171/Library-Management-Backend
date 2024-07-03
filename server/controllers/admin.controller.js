@@ -104,6 +104,25 @@ export const deleteBook = async (req, res, next) => {
     next(error);
   }
 };
+
+export const sortBooksByPublisher = async (req, res, next) => {
+  const id = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return next(errorHandle(400, "Invalid publisher ID"));
+
+  try {
+    const books = await Book.find({ publisher: id })
+      .sort({ title: 1 })
+      .populate("publisher", "name");
+    if (!books.length)
+      return next(errorHandle(404, "No books found for this publisher"));
+
+    res.status(200).json(books);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const viewAllUsers = async (req, res, next) => {
   try {
     const users = await User.find().select("-password");
