@@ -192,9 +192,12 @@ export const viewAllUsers = async (req, res, next) => {
 
 // Publisher related functions
 export const deletePublisher = async (req, res, next) => {
-  const { id } = req.body;
+  const id = req.params.id;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return next(errorHandle(400, "Invalid publisher ID"));
   try {
-    const publisher = await Publisher.findByIdAndDelete(_id);
+    const publisher = await Publisher.findByIdAndDelete({ _id: id });
     res.status(200).json(publisher);
   } catch (error) {
     next(error);

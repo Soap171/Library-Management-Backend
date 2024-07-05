@@ -35,5 +35,6 @@ route.get("/books/author", verifyToken, checkAdmin, searchBooksByAuthor); // ser
 route.post("/publisher", verifyToken, checkAdmin, addPublisher); // add a new publisher
 route.get("/publishers", verifyToken, checkAdmin, viewAllPublishers); // view all publishers
 route.get("/publisher/:id", verifyToken, checkAdmin, viewPublisher); // view a publisher
+route.delete("/publisher/:id", verifyToken, checkAdmin, deletePublisher); // delete a publisher
 
 export default route;
