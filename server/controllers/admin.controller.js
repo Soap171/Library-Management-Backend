@@ -143,15 +143,20 @@ export const sortBooksByPublisher = async (req, res, next) => {
 };
 
 export const searchBooksByAuthor = async (req, res, next) => {
-  const author = req.params.author;
+  const author = req.query.q;
 
   try {
+    if (!author || !author.trim()) {
+      return next(errorHandle(400, "Author name is required"));
+    }
+
     const books = await Book.find({
-      author: { $regex: author, $options: "i" },
+      author: { $regex: new RegExp(author, "i") },
     }).sort({ title: 1 });
 
-    if (!books.length)
+    if (books.length === 0) {
       return next(errorHandle(404, "No books found for this author"));
+    }
 
     res.status(200).json(books);
   } catch (error) {
