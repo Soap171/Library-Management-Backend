@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route.js";
 import updateRoutes from "./routes/updateProfile.route.js";
 import adminRoutes from "./routes/admin.route.js";
+import userRoutes from "./routes/user.route.js";
 const app = express();
 
 // Middleware
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", updateRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/user", userRoutes);
 
 const PORT = process.env.PORT || 3000;
 
