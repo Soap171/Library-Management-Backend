@@ -125,16 +125,28 @@ export const deleteBook = async (req, res, next) => {
 };
 
 export const sortBooksByPublisher = async (req, res, next) => {
-  const id = req.params.id;
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return next(errorHandle(400, "Invalid publisher ID"));
+  const publisherName = req.query.q;
 
   try {
-    const books = await Book.find({ publisher: id })
+    if (!publisherName || !publisherName.trim()) {
+      return next(errorHandle(400, "Publisher name is required"));
+    }
+
+    const publisher = await Publisher.findOne({
+      name: { $regex: new RegExp(publisherName, "i") },
+    });
+
+    if (!publisher) {
+      return next(errorHandle(404, "Publisher not found"));
+    }
+
+    const books = await Book.find({ publisher: publisher._id })
       .sort({ title: 1 })
       .populate("publisher", "name");
-    if (!books.length)
+
+    if (books.length === 0) {
       return next(errorHandle(404, "No books found for this publisher"));
+    }
 
     res.status(200).json(books);
   } catch (error) {

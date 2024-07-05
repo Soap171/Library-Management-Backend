@@ -28,13 +28,8 @@ route.put("/book/:id", verifyToken, checkAdmin, updateBook); // update a book
 route.get("/books", verifyToken, checkAdmin, viewAllBooks); // view all books
 route.get("/book/:id", verifyToken, checkAdmin, viewBook); // view a book
 route.delete("/book/:id", verifyToken, checkAdmin, deleteBook); // delete a book
-route.get(
-  "/books/publisher/:id",
-  verifyToken,
-  checkAdmin,
-  sortBooksByPublisher
-); // search books using publisher id
-route.get("/books/:author", verifyToken, checkAdmin, searchBooksByAuthor); // serch books using author's name
+route.get("/books/publisher/", verifyToken, checkAdmin, sortBooksByPublisher); // search books using publisher id
+route.get("/books/author", verifyToken, checkAdmin, searchBooksByAuthor); // serch books using author's name
 
 // publisher related routes
 route.post("/publisher", verifyToken, checkAdmin, addPublisher); // add a new publisher
