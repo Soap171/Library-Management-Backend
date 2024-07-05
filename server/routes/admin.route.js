@@ -14,6 +14,7 @@ import {
   viewPublisher,
   sortBooksByPublisher,
   searchBooksByAuthor,
+  viewBook,
 } from "../controllers/admin.controller.js";
 
 const route = express.Router();
@@ -25,6 +26,7 @@ route.get("/users", verifyToken, checkAdmin, viewAllUsers);
 route.post("/book", verifyToken, checkAdmin, addBook); // create a new book
 route.put("/book/:id", verifyToken, checkAdmin, updateBook); // update a book
 route.get("/books", verifyToken, checkAdmin, viewAllBooks); // view all books
+route.get("/book/:id", verifyToken, checkAdmin, viewBook); // view a book
 route.delete("/book/:id", verifyToken, checkAdmin, deleteBook); // delete a book
 route.get(
   "/books/publisher/:id",

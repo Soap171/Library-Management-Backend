@@ -16,6 +16,21 @@ export const viewAllBooks = async (req, res, next) => {
   }
 };
 
+export const viewBook = async (req, res, next) => {
+  const id = req.params.id;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return next(errorHandle(400, "Invalid book ID"));
+
+  try {
+    const book = await Book.findById({ _id: id });
+    if (!book) return next(errorHandle(404, "No book found"));
+    res.status(200).json(book);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const addBook = async (req, res, next) => {
   const {
     title,
