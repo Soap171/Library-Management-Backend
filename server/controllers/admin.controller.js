@@ -227,6 +227,54 @@ export const lendBookToUser = async (req, res, next) => {
   }
 };
 
+export const returnBook = async (req, res, next) => {
+  const { bookId, reservationId } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(bookId)) {
+    return next(errorHandle(400, "Invalid book ID"));
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(reservationId)) {
+    return next(errorHandle(400, "Invalid reservation ID"));
+  }
+
+  try {
+    const book = await Book.findById(bookId);
+    if (!book) {
+      return next(errorHandle(404, "Book not found"));
+    }
+
+    const reservation = await Reservation.findById(reservationId);
+    if (!reservation) {
+      return next(errorHandle(404, "Reservation not found"));
+    }
+
+    const user = await User.findById(reservation.user);
+    if (!user) {
+      return next(errorHandle(404, "User not found"));
+    }
+
+    // Update book's copies and borrowed list
+    book.copiesAvailable += 1;
+    book.borrowedBy.pull(user._id);
+    book.reservations.pull(reservationId);
+    await book.save();
+
+    // Update user's borrowed books list
+    user.borrowedBooks.pull(book._id);
+    await user.save();
+
+    // Delete the reservation
+    await reservation.deleteOne();
+
+    res
+      .status(200)
+      .json({ message: "Book returned and reservation deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const viewAllReservations = async (req, res, next) => {
   try {
     const reservations = await Reservation.find()
