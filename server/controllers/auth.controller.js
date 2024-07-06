@@ -22,11 +22,11 @@ export const login = async (req, res, next) => {
     if (!isMatch) return next(errorHandle(401, "Invalid username or password"));
 
     const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, {
-      expiresIn: "30s",
+      expiresIn: "10m",
     });
 
     const refresh_token = jwt.sign({ userId: user.id }, JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "2h",
     });
     const { password: pass, ...rest } = user._doc;
 
@@ -37,7 +37,7 @@ export const login = async (req, res, next) => {
         secure: true,
         sameSite: "none",
       })
-      .json({ token });
+      .json({ token, rest });
   } catch (error) {
     return next(error);
   }
@@ -54,7 +54,7 @@ export const refresh = async (req, res, next) => {
     const newToken = jwt.sign(
       { userId: user.id, role: user.role },
       JWT_SECRET,
-      { expiresIn: "15s" }
+      { expiresIn: "5m" }
     );
     res.json({ token: newToken });
   } catch (error) {
