@@ -177,7 +177,55 @@ export const searchBooksByAuthor = async (req, res, next) => {
   }
 };
 
-export const lendBook = async (req, res, next) => {};
+export const lendBookToUser = async (req, res, next) => {
+  const { bookId, reservationId } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(bookId)) {
+    return next(errorHandle(400, "Invalid book ID"));
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(reservationId)) {
+    return next(errorHandle(400, "Invalid reservation ID"));
+  }
+
+  try {
+    const book = await Book.findById(bookId);
+    if (!book) {
+      return next(errorHandle(404, "Book not found"));
+    }
+
+    const reservation = await Reservation.findById(reservationId);
+    if (!reservation) {
+      return next(errorHandle(404, "Reservation not found"));
+    }
+
+    if (book.copiesAvailable < 1) {
+      return next(errorHandle(400, "No available copies of this book"));
+    }
+
+    const user = await User.findById(reservation.user);
+    if (!user) {
+      return next(errorHandle(404, "User not found"));
+    }
+
+    // Update book's copies and borrowed list
+    book.copiesAvailable -= 1;
+    book.borrowedBy.push(user._id);
+    await book.save();
+
+    // Update user's borrowed books list
+    user.borrowedBooks.push(book._id);
+    await user.save();
+
+    // Update the reservation status to "borrowed"
+    reservation.status = "borrowed";
+    await reservation.save();
+
+    res.status(200).json({ message: "Book lent to user successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const viewAllReservations = async (req, res, next) => {
   try {
@@ -204,7 +252,8 @@ export const viewBookReservations = async (req, res, next) => {
   try {
     const reservations = await Reservation.find({ book: id })
       .populate("user", "username")
-      .populate("book", "title");
+      .populate("book", "title")
+      .sort({ reservedAt: 1 }); // Sort reservations by reservedAt in ascending order
 
     if (reservations.length === 0) {
       return next(errorHandle(404, "No reservations found for this book"));

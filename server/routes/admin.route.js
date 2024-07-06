@@ -15,7 +15,7 @@ import {
   sortBooksByPublisher,
   searchBooksByAuthor,
   viewBook,
-  lendBook,
+  lendBookToUser,
   viewAllReservations,
   viewBookReservations,
 } from "../controllers/admin.controller.js";
@@ -33,7 +33,7 @@ route.get("/book/:id", verifyToken, checkAdmin, viewBook); // view a book
 route.delete("/book/:id", verifyToken, checkAdmin, deleteBook); // delete a book
 route.get("/books/publisher/", verifyToken, checkAdmin, sortBooksByPublisher); // search books using publisher id
 route.get("/books/author", verifyToken, checkAdmin, searchBooksByAuthor); // serch books using author's name
-route.post("/book/lend/:id", verifyToken, checkAdmin, lendBook); // lend a book
+route.post("/book/lend/", verifyToken, checkAdmin, lendBookToUser); // lend a book
 route.get("/reservations", verifyToken, checkAdmin, viewAllReservations); // view all reservations
 route.get("/reservations/:id", verifyToken, checkAdmin, viewBookReservations); // view a reservation
 
