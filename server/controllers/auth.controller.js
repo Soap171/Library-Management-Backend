@@ -22,23 +22,45 @@ export const login = async (req, res, next) => {
     if (!isMatch) return next(errorHandle(401, "Invalid username or password"));
 
     const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, {
+      expiresIn: "30s",
+    });
+
+    const refresh_token = jwt.sign({ userId: user.id }, JWT_SECRET, {
       expiresIn: "1h",
     });
     const { password: pass, ...rest } = user._doc;
 
     res
       .status(200)
-      .cookie("access_token", token, {
+      .cookie("jwt", refresh_token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
       })
-      .json(rest);
+      .json({ token });
   } catch (error) {
     return next(error);
   }
 };
 
+export const refresh = async (req, res, next) => {
+  const refresh_token = req.cookies.jwt;
+
+  if (!refresh_token) return next(errorHandle(401, "Unauthorized"));
+
+  try {
+    const { userId } = jwt.verify(refresh_token, JWT_SECRET);
+    const user = await User.findById(userId);
+    const newToken = jwt.sign(
+      { userId: user.id, role: user.role },
+      JWT_SECRET,
+      { expiresIn: "15s" }
+    );
+    res.json({ token: newToken });
+  } catch (error) {
+    next(error);
+  }
+};
 export const register = async (req, res, next) => {
   const {
     username,
@@ -117,6 +139,8 @@ export const google = async (req, res, next) => {
 };
 
 export const logout = async (req, res, next) => {
-  res.cookie("access_token", "", { httpOnly: true, expires: new Date(0) });
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.sendStatus(204);
+  res.cookie("jwt", "", { httpOnly: true, expires: new Date(0) });
   res.status(201).json({ message: "Logged out" });
 };

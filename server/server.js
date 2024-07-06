@@ -22,7 +22,7 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/user", userRoutes);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORTNO || 8000;
 
 mongoose
   .connect(process.env.MONGODB_URI)
