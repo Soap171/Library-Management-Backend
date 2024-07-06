@@ -195,6 +195,27 @@ export const viewAllReservations = async (req, res, next) => {
   }
 };
 
+export const viewBookReservations = async (req, res, next) => {
+  const id = req.params.id;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return next(errorHandle(400, "Invalid book ID"));
+
+  try {
+    const reservations = await Reservation.find({ book: id })
+      .populate("user", "username")
+      .populate("book", "title");
+
+    if (reservations.length === 0) {
+      return next(errorHandle(404, "No reservations found for this book"));
+    }
+
+    res.status(200).json(reservations);
+  } catch (error) {
+    next(error);
+  }
+};
+
 // end of Book related functions
 
 // User related functions
