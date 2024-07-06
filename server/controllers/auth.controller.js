@@ -22,45 +22,25 @@ export const login = async (req, res, next) => {
     if (!isMatch) return next(errorHandle(401, "Invalid username or password"));
 
     const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, {
-      expiresIn: "10m",
+      expiresIn: "5h",
     });
 
-    const refresh_token = jwt.sign({ userId: user.id }, JWT_SECRET, {
-      expiresIn: "2h",
-    });
     const { password: pass, ...rest } = user._doc;
 
     res
       .status(200)
-      .cookie("jwt", refresh_token, {
+      .cookie("access_token", token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
+        maxAge: 1000 * 60 * 60 * 5,
       })
-      .json({ token, rest });
+      .json({ rest });
   } catch (error) {
     return next(error);
   }
 };
 
-export const refresh = async (req, res, next) => {
-  const refresh_token = req.cookies.jwt;
-
-  if (!refresh_token) return next(errorHandle(401, "Unauthorized"));
-
-  try {
-    const { userId } = jwt.verify(refresh_token, JWT_SECRET);
-    const user = await User.findById(userId);
-    const newToken = jwt.sign(
-      { userId: user.id, role: user.role },
-      JWT_SECRET,
-      { expiresIn: "5m" }
-    );
-    res.json({ token: newToken });
-  } catch (error) {
-    next(error);
-  }
-};
 export const register = async (req, res, next) => {
   const {
     username,

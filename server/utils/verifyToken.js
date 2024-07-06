@@ -7,13 +7,10 @@ dotenv.config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET;
 
 export const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.authorization || req.headers.Authorization;
+  const token = req.cookies.access_token;
 
-  if (!authHeader.startsWith("Bearer ")) {
-    return next(errorHandle(401, "Unauthorized"));
-  }
+  if (!token) return next(errorHandle(401, "Unauthorized"));
 
-  const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, JWT_SECRET_KEY);
     req.userId = decoded.userId;
