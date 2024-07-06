@@ -119,8 +119,8 @@ export const google = async (req, res, next) => {
 };
 
 export const logout = async (req, res, next) => {
-  const cookies = req.cookies;
-  if (!cookies?.jwt) return res.sendStatus(204);
-  res.cookie("jwt", "", { httpOnly: true, expires: new Date(0) });
+  if (!req.cookies.access_token)
+    return next(errorHandle(401, "User not logged in"));
+  res.cookie("access_token", "", { httpOnly: true, expires: new Date(0) });
   res.status(201).json({ message: "Logged out" });
 };
