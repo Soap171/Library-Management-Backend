@@ -3,6 +3,7 @@ import Book from "../models/book.schema.js";
 import User from "../models/user.schema.js";
 import Publisher from "../models/publisher.schema.js";
 import mongoose from "mongoose";
+import Reservation from "../models/reservation.schema.js";
 
 // Books related functions
 export const viewAllBooks = async (req, res, next) => {
@@ -171,6 +172,24 @@ export const searchBooksByAuthor = async (req, res, next) => {
     }
 
     res.status(200).json(books);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const lendBook = async (req, res, next) => {};
+
+export const viewAllReservations = async (req, res, next) => {
+  try {
+    const reservations = await Reservation.find()
+      .populate("user", "user username")
+      .populate("book", "title");
+
+    if (reservations.length === 0) {
+      return next(errorHandle(404, "No reservations found"));
+    }
+
+    res.status(200).json(reservations);
   } catch (error) {
     next(error);
   }

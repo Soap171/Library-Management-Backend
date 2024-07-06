@@ -15,6 +15,8 @@ import {
   sortBooksByPublisher,
   searchBooksByAuthor,
   viewBook,
+  lendBook,
+  viewAllReservations,
 } from "../controllers/admin.controller.js";
 
 const route = express.Router();
@@ -30,6 +32,8 @@ route.get("/book/:id", verifyToken, checkAdmin, viewBook); // view a book
 route.delete("/book/:id", verifyToken, checkAdmin, deleteBook); // delete a book
 route.get("/books/publisher/", verifyToken, checkAdmin, sortBooksByPublisher); // search books using publisher id
 route.get("/books/author", verifyToken, checkAdmin, searchBooksByAuthor); // serch books using author's name
+route.post("/book/lend/:id", verifyToken, checkAdmin, lendBook); // lend a book
+route.get("/reservations", verifyToken, checkAdmin, viewAllReservations); // view all reservations
 
 // publisher related routes
 route.post("/publisher", verifyToken, checkAdmin, addPublisher); // add a new publisher
