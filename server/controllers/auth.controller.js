@@ -67,7 +67,10 @@ export const register = async (req, res, next) => {
 
   try {
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
-    if (existingUser) return next(errorHandle(401, "User already exists"));
+    if (existingUser)
+      return next(
+        errorHandle(401, "User already exists Check your username and email")
+      );
 
     const hashedPassword = await bcypt.hash(password, 10);
 

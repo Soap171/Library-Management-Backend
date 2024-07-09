@@ -98,3 +98,23 @@ export const viewReservations = async (req, res, next) => {
     next(error);
   }
 };
+
+// delete a reservation
+
+export const deleteReservation = async (req, res, next) => {
+  const reservationId = req.params.id;
+
+  if (!mongoose.Types.ObjectId.isValid(reservationId)) {
+    return next(errorHandle(400, "Invalid reservation ID"));
+  }
+
+  try {
+    const reservation = await Reservation.findById(reservation);
+    if (!reservation) return next(errorHandle(404, "Reservation not found"));
+
+    await Reservation.findByIdAndDelete(reservationId);
+    res.status(200).json({ message: "Reservation deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
