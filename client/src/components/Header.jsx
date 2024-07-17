@@ -1,10 +1,19 @@
 import React from "react";
 import Logo from "../images/logo.svg";
 import { Link, useLocation } from "react-router-dom";
+import { useAuthContext } from "../hooks/useAuthContext";
+import { useLogout } from "../hooks/useLogout";
 
 function Header() {
-  const role = "admin";
   const location = useLocation().pathname;
+  const { user } = useAuthContext();
+  const role = user?.rest?.role;
+  const { logout } = useLogout();
+
+  const handleLogout = (e) => {
+    e.preventDefault(); // Prevent default action if this is attached to a form or link
+    logout(); // Call the logout function obtained from useLogout hook
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -13,29 +22,32 @@ function Header() {
           <img src={Logo} width="36" alt="Logo" />
         </Link>
         <div className="d-flex align-items-center d-lg-none">
-          <li className="nav-item dropdown me-2">
-            <a
-              className="avatar"
-              href="#"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <img src="/images/avatar/1.jpg" alt="Avatar" />
-              <span className="avatar-badge border bg-red-300 p-1"></span>
-            </a>
-            <ul className="dropdown-menu">
-              <li>
-                <a className="dropdown-item" href="#">
-                  Profile
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="#">
-                  Logout
-                </a>
-              </li>
-            </ul>
-          </li>
+          {user && (
+            <li className="nav-item dropdown me-4">
+              <a
+                className="avatar"
+                href="#"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <img src={user?.rest?.profilePic} alt="Avatar" width="25" />
+                <span className="avatar-badge border bg-red-300 p-1"></span>
+              </a>
+              <ul className="dropdown-menu">
+                <li>
+                  <a className="dropdown-item" href="#">
+                    Profile
+                  </a>
+                </li>
+
+                <li>
+                  <a className="dropdown-item" onClick={handleLogout}>
+                    Logout
+                  </a>
+                </li>
+              </ul>
+            </li>
+          )}
           <button
             className="navbar-toggler"
             type="button"
@@ -134,32 +146,42 @@ function Header() {
                 />
               </form>
             )}
-            <li className="nav-item dropdown me-3 d-none d-lg-block">
-              <a
-                className="avatar"
-                href="#"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <img src="/images/avatar/1.jpg" alt="Avatar" />
-                <span className="avatar-badge border bg-red-300 p-1"></span>
-              </a>
-              <ul className="dropdown-menu">
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Profile
-                  </a>
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Logout
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <Link className="btn btn-primary d-none d-lg-block" to="/login">
-              Login
-            </Link>
+            {user && (
+              <li className="nav-item dropdown me-5">
+                <a
+                  className="avatar"
+                  href="#"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <img
+                    src={user?.rest?.profilePic}
+                    alt="avatar"
+                    width="25px"
+                    height="25"
+                    className="d-none d-lg-block"
+                  />
+                  <span className="avatar-badge border bg-red-300 p-1"></span>
+                </a>
+                <ul className="dropdown-menu">
+                  <li>
+                    <a className="dropdown-item" href="#">
+                      Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a className="dropdown-item" onClick={handleLogout}>
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            )}
+            {!user && (
+              <Link className="btn btn-primary d-none d-lg-block" to="/login">
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>
