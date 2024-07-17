@@ -3,15 +3,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useSignIn } from "../hooks/useSignIn";
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { signIn, error, isLoading } = useSignIn();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
+
+    await signIn(username, password);
   };
   return (
     <div className="container-fluid h-custom">
@@ -38,14 +40,14 @@ function Login() {
 
             <div className="form-outline mb-4">
               <input
-                type="email"
-                id="email"
+                type="text"
+                id="username"
                 className="form-control form-control-lg"
-                placeholder="Enter a valid email address"
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter the username"
+                onChange={(e) => setUsername(e.target.value)}
               />
-              <label className="form-label" htmlFor="email">
-                Email address
+              <label className="form-label" htmlFor="username">
+                Username
               </label>
             </div>
 
@@ -85,9 +87,12 @@ function Login() {
                 className="btn btn-primary btn-lg"
                 style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
                 onClick={handleSubmit}
+                disabled={isLoading}
               >
-                Login
+                {isLoading ? "Loading..." : "Login"}
               </button>
+              {error && <p className="text-danger mt-2">{error}</p>}
+
               <p className="small fw-bold mt-2 pt-1 mb-0">
                 Don't have an account?{" "}
                 <Link to="/register" className="link-danger">

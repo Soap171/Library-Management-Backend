@@ -38,6 +38,7 @@ export const login = async (req, res, next) => {
       .json({ rest });
   } catch (error) {
     return next(error);
+    console.log(error);
   }
 };
 

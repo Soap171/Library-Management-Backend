@@ -1,4 +1,3 @@
-import { useAuthContext } from "./useAuthContext";
 import { useState } from "react";
 
 export const useRegister = () => {
