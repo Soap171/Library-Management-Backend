@@ -2,14 +2,23 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Email:", email);
+    console.log("Password:", password);
+  };
   return (
     <div className="container-fluid h-custom">
       <div className="row d-flex justify-content-center align-items-center vh-100">
         <div className="col-md-9 col-lg-6 col-xl-5">
           <img
-            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+            src="https://images.pexels.com/photos/256431/pexels-photo-256431.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
             className="img-fluid"
             alt="Sample image"
           />
@@ -33,6 +42,7 @@ function Login() {
                 id="email"
                 className="form-control form-control-lg"
                 placeholder="Enter a valid email address"
+                onChange={(e) => setEmail(e.target.value)}
               />
               <label className="form-label" htmlFor="email">
                 Email address
@@ -45,6 +55,7 @@ function Login() {
                 id="password"
                 className="form-control form-control-lg"
                 placeholder="Enter password"
+                onChange={(e) => setPassword(e.target.value)}
               />
               <label className="form-label" htmlFor="password">
                 Password
@@ -73,6 +84,7 @@ function Login() {
                 type="button"
                 className="btn btn-primary btn-lg"
                 style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
+                onClick={handleSubmit}
               >
                 Login
               </button>

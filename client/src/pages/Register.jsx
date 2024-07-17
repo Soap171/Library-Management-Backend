@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { useRegister } from "../hooks/useRegister";
+import { Link } from "react-router-dom";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -12,6 +14,7 @@ function Register() {
     address: "",
     password: "",
   });
+  const { register, error, isLoading, isSuccess } = useRegister();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -21,10 +24,23 @@ function Register() {
     });
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (isSuccess) {
+      setFormData({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        phoneNumber: "",
+        address: "",
+        password: "",
+      });
+    }
+  }, [isSuccess]);
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Form data:", formData);
+
+    await register(formData);
   };
 
   return (
@@ -86,13 +102,13 @@ function Register() {
                 <div className="form-outline mb-4">
                   <input
                     type="text"
-                    id="userName"
-                    name="userName"
+                    id="username"
+                    name="username"
                     className="form-control"
-                    value={formData.userName}
+                    value={formData.username}
                     onChange={handleChange}
                   />
-                  <label className="form-label" htmlFor="userName">
+                  <label className="form-label" htmlFor="username">
                     Username
                   </label>
                 </div>
@@ -156,9 +172,16 @@ function Register() {
                 <button
                   type="submit"
                   className="btn btn-primary btn-block mb-4"
+                  disabled={isLoading}
                 >
-                  Sign up
+                  {isLoading ? "Loading..." : "Sign up"}
                 </button>
+                {error && <div className="alert alert-danger">{error}</div>}
+                {isSuccess && (
+                  <div className="alert alert-success">
+                    Account created successfully. <Link to="/login">Login</Link>
+                  </div>
+                )}
 
                 <div className="text-center">
                   <p>or sign up with:</p>

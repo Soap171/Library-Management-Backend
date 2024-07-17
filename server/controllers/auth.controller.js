@@ -53,6 +53,8 @@ export const register = async (req, res, next) => {
     role,
   } = req.body;
 
+  console.log(req.body);
+
   if (
     !username ||
     !password ||

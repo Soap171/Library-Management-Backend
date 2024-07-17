@@ -19,16 +19,16 @@ export const authReducer = (state, action) => {
   }
 };
 
-export const AuthContextProvider = ({ childern }) => {
+export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, {
     user: null,
   });
+
+  console.log("Auth state", state);
+
+  return (
+    <AuthContext.Provider value={{ ...state, dispatch }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
-
-console.log("Auth state", state);
-
-return (
-  <AuthContext.Provider value={{ state, dispatch }}>
-    {children}
-  </AuthContext.Provider>
-);
