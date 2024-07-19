@@ -121,7 +121,8 @@ export const passwordReset = async (req, res, next) => {
 };
 
 export const google = async (req, res, next) => {
-  res.send("This is Google");
+  try {
+  } catch (error) {}
 };
 
 export const logout = async (req, res, next) => {

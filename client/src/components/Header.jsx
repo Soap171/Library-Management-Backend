@@ -10,6 +10,9 @@ function Header() {
   const role = user?.rest?.role;
   const { logout } = useLogout();
 
+  const userId = user?.rest?._id;
+  console.log("User ID", userId);
+
   const handleLogout = (e) => {
     e.preventDefault(); // Prevent default action if this is attached to a form or link
     logout(); // Call the logout function obtained from useLogout hook
@@ -35,9 +38,9 @@ function Header() {
               </a>
               <ul className="dropdown-menu">
                 <li>
-                  <a className="dropdown-item" href="#">
+                  <Link className="dropdown-item" to="/profile">
                     Profile
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
@@ -148,12 +151,7 @@ function Header() {
             )}
             {user && (
               <li className="nav-item dropdown me-5">
-                <a
-                  className="avatar"
-                  href="#"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
+                <a className="avatar" data-bs-toggle="dropdown">
                   <img
                     src={user?.rest?.profilePic}
                     alt="avatar"
@@ -165,10 +163,11 @@ function Header() {
                 </a>
                 <ul className="dropdown-menu">
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to={`/profile/${userId}`}>
                       Profile
-                    </a>
+                    </Link>
                   </li>
+
                   <li>
                     <a className="dropdown-item" onClick={handleLogout}>
                       Logout

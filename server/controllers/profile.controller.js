@@ -42,7 +42,7 @@ export const updateProfile = async (req, res, next) => {
 };
 
 export const viewProfile = async (req, res, next) => {
-  const userId = req.userId;
+  const userId = req.params.id;
   console.log(userId);
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
