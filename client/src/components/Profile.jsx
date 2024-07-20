@@ -28,17 +28,30 @@ function Profile() {
   const [isEditable, setIsEditable] = useState(false);
   const toggleEdit = () => setIsEditable(!isEditable);
 
-  const [address, setAddress] = useState(data?.userInfo?.address);
-  const [email, setEmail] = useState(data?.userInfo?.email);
-  const [firstName, setfirstName] = useState(data?.userInfo?.firstName);
-  const [lastName, setlastName] = useState(data?.userInfo?.lastName);
-  const [phoneNumber, setPhoneNumber] = useState(data?.userInfo?.phoneNumber);
+  const [address, setAddress] = useState(data?.userInfo?.address || "");
+  const [email, setEmail] = useState(data?.userInfo?.email || "");
+  const [firstName, setfirstName] = useState(data?.userInfo?.firstName || "");
+  const [lastName, setlastName] = useState(data?.userInfo?.lastName || "");
+  const [phoneNumber, setPhoneNumber] = useState(
+    data?.userInfo?.phoneNumber || ""
+  );
 
   const handleAddressChange = (e) => setAddress(e.target.value);
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlefirstNameChange = (e) => setfirstName(e.target.value);
   const handlelastNameChange = (e) => setlastName(e.target.value);
   const handlePhoneNumberChange = (e) => setPhoneNumber(e.target.value);
+
+  // Update state when `data` changes
+  useEffect(() => {
+    if (data?.userInfo) {
+      setAddress(data.userInfo.address || "");
+      setEmail(data.userInfo.email || "");
+      setfirstName(data.userInfo.firstName || "");
+      setlastName(data.userInfo.lastName || "");
+      setPhoneNumber(data.userInfo.phoneNumber || "");
+    }
+  }, [data]);
 
   if (status === "loading") {
     return <div>Loading...</div>;
@@ -66,7 +79,15 @@ function Profile() {
                   />
                   <p className=" mb-1">@{data?.userInfo?.username}</p>
                   <p className="text-muted mb-4">
-                    {data?.userInfo?.dateJoined}
+                    Member Since{" "}
+                    {new Date(data?.userInfo?.dateJoined).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
                   </p>
                   <div className="d-flex justify-content-center mb-2">
                     <MDBBtn onClick={toggleEdit}>
