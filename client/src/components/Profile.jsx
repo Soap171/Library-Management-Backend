@@ -17,6 +17,7 @@ import {
   MDBListGroup,
   MDBListGroupItem,
   MDBCardHeader,
+  MDBInput,
 } from "mdb-react-ui-kit";
 import { useUserData } from "../hooks/useUserData";
 import Header from "./Header";
@@ -24,6 +25,20 @@ import Header from "./Header";
 function Profile() {
   const { id } = useParams();
   const { status, data, error } = useUserData(id);
+  const [isEditable, setIsEditable] = useState(false);
+  const toggleEdit = () => setIsEditable(!isEditable);
+
+  const [address, setAddress] = useState(data?.userInfo?.address);
+  const [email, setEmail] = useState(data?.userInfo?.email);
+  const [firstName, setfirstName] = useState(data?.userInfo?.firstName);
+  const [lastName, setlastName] = useState(data?.userInfo?.lastName);
+  const [phoneNumber, setPhoneNumber] = useState(data?.userInfo?.phoneNumber);
+
+  const handleAddressChange = (e) => setAddress(e.target.value);
+  const handleEmailChange = (e) => setEmail(e.target.value);
+  const handlefirstNameChange = (e) => setfirstName(e.target.value);
+  const handlelastNameChange = (e) => setlastName(e.target.value);
+  const handlePhoneNumberChange = (e) => setPhoneNumber(e.target.value);
 
   if (status === "loading") {
     return <div>Loading...</div>;
@@ -54,7 +69,9 @@ function Profile() {
                     {data?.userInfo?.dateJoined}
                   </p>
                   <div className="d-flex justify-content-center mb-2">
-                    <MDBBtn>Update</MDBBtn>
+                    <MDBBtn onClick={toggleEdit}>
+                      {isEditable ? "Save" : "Edit"}
+                    </MDBBtn>
                     <MDBBtn outline className="ms-1">
                       Log out
                     </MDBBtn>
@@ -84,48 +101,82 @@ function Profile() {
               <MDBCard className="mb-4">
                 <MDBCardBody>
                   <MDBRow>
-                    <MDBCol sm="3">
-                      <MDBCardText>Full Name</MDBCardText>
-                    </MDBCol>
-                    <MDBCol sm="9">
-                      <MDBCardText className="text-muted">
-                        {data?.userInfo?.firstName} {data?.userInfo?.lastName}
-                      </MDBCardText>
-                    </MDBCol>
-                  </MDBRow>
-                  <hr />
-                  <MDBRow>
-                    <MDBCol sm="3">
-                      <MDBCardText>Email</MDBCardText>
-                    </MDBCol>
-                    <MDBCol sm="9">
-                      <MDBCardText className="text-muted">
-                        {data?.userInfo?.email}
-                      </MDBCardText>
+                    <MDBCol md="12">
+                      <MDBInput
+                        label="First Name"
+                        group
+                        type="text"
+                        validate
+                        error="wrong"
+                        success="right"
+                        value={firstName}
+                        onChange={handlefirstNameChange}
+                        readOnly={!isEditable}
+                      />
                     </MDBCol>
                   </MDBRow>
                   <hr />
                   <MDBRow>
-                    <MDBCol sm="3">
-                      <MDBCardText>Phone</MDBCardText>
-                    </MDBCol>
-                    <MDBCol sm="9">
-                      <MDBCardText className="text-muted">
-                        {data?.userInfo?.phoneNumber}
-                      </MDBCardText>
+                    <MDBCol md="12">
+                      <MDBInput
+                        label="Last Name"
+                        group
+                        type="text"
+                        validate
+                        error="wrong"
+                        success="right"
+                        value={lastName}
+                        onChange={handlelastNameChange}
+                        readOnly={!isEditable}
+                      />
                     </MDBCol>
                   </MDBRow>
                   <hr />
                   <MDBRow>
-                    <MDBCol sm="3">
-                      <MDBCardText>Address</MDBCardText>
-                    </MDBCol>
-                    <MDBCol sm="9">
-                      <MDBCardText className="text-muted">
-                        {data?.userInfo?.address}
-                      </MDBCardText>
+                    <MDBCol md="12">
+                      <MDBInput
+                        label="Email"
+                        group
+                        type="text"
+                        validate
+                        error="wrong"
+                        success="right"
+                        value={email}
+                        onChange={handleEmailChange}
+                        readOnly={!isEditable}
+                      />
                     </MDBCol>
                   </MDBRow>
+                  <hr />
+                  <MDBRow>
+                    <MDBCol md="12">
+                      <MDBInput
+                        label="Mobile"
+                        group
+                        type="text"
+                        validate
+                        error="wrong"
+                        success="right"
+                        value={phoneNumber}
+                        onChange={handlePhoneNumberChange}
+                        readOnly={!isEditable}
+                      />
+                    </MDBCol>
+                  </MDBRow>
+                  <hr />
+                  <MDBCol md="12">
+                    <MDBInput
+                      label="Address"
+                      group
+                      type="text"
+                      validate
+                      error="wrong"
+                      success="right"
+                      value={address}
+                      onChange={handleAddressChange}
+                      readOnly={!isEditable}
+                    />
+                  </MDBCol>
                 </MDBCardBody>
               </MDBCard>
 
