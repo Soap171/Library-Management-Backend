@@ -11,7 +11,6 @@ function Header() {
   const { logout } = useLogout();
 
   const userId = user?.rest?._id;
-  console.log("User ID", userId);
 
   const handleLogout = (e) => {
     e.preventDefault(); // Prevent default action if this is attached to a form or link

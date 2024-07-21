@@ -7,7 +7,7 @@ import {
 
 const route = express.Router();
 
-route.put("/update", verifyToken, updateProfile);
+route.put("/update/:id", verifyToken, updateProfile);
 route.get("/:id", verifyToken, viewProfile);
 
 export default route;

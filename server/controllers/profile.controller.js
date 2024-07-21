@@ -13,11 +13,9 @@ export const updateProfile = async (req, res, next) => {
     profilePic,
   } = req.body;
 
-  console.log("inside");
-
   try {
-    const user = await User.findById(req.userId);
-    console.log(req.userId);
+    const { id } = req.params;
+    const user = await User.findById(id);
 
     if (!user) {
       return next(errorHandle(404, "User not found"));

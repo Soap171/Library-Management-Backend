@@ -19,12 +19,22 @@ import {
   MDBCardHeader,
   MDBInput,
 } from "mdb-react-ui-kit";
-import { useUserData } from "../hooks/useUserData";
+import { useUserProfile } from "../hooks/useUserProfile";
 import Header from "./Header";
 
 function Profile() {
   const { id } = useParams();
-  const { status, data, error } = useUserData(id);
+  const {
+    status,
+    data,
+    error,
+    updateProfile,
+    isLoading,
+    isUpdating,
+    isError,
+    isSuccess,
+    updateError,
+  } = useUserProfile(id);
   const [isEditable, setIsEditable] = useState(false);
   const toggleEdit = () => setIsEditable(!isEditable);
 
@@ -53,11 +63,30 @@ function Profile() {
     }
   }, [data]);
 
-  if (status === "loading") {
+  useEffect(() => {
+    if (isSuccess) {
+      alert("Profile updated successfully");
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (updateError) {
+      alert("Profile updated unsuccessfully");
+    }
+  }, [updateError]);
+
+  const handleSubmit = () => {
+    updateProfile({
+      userId: id,
+      userData: { firstName, lastName, email, phoneNumber, address },
+    });
+  };
+
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (status === "error") {
+  if (error) {
     return <div>Error: {error.message}</div>;
   }
 
@@ -90,8 +119,15 @@ function Profile() {
                     )}
                   </p>
                   <div className="d-flex justify-content-center mb-2">
-                    <MDBBtn onClick={toggleEdit}>
-                      {isEditable ? "Save" : "Edit"}
+                    <MDBBtn
+                      onClick={isEditable ? handleSubmit : toggleEdit}
+                      disabled={isUpdating}
+                    >
+                      {isEditable
+                        ? isUpdating
+                          ? "Saving..."
+                          : "Save"
+                        : "Edit"}
                     </MDBBtn>
                     <MDBBtn outline className="ms-1">
                       Log out
