@@ -10,7 +10,8 @@ This is for the admin
 admin can view the reservations for each book
 admin can make the crud operation of books and stuff
 can search books
-send notifies using SMS for users about their over due books
+lend books to users (according to their reservations)
+return books from users that have given from reservations
 
 
 This is for the users (members)
